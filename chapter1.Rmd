@@ -2,3 +2,9 @@
 # About the project
 
 *Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you can use R Markdown syntax.*
+
+## MOOC Introduction to Open Data Science 2019: Homework1
+
+> The purpose of learning this course is that I would like to learn data analysis skill for the future career. Plus, this online course looks **awesome**!
+
+#### Click the link to my [GitHub repository](https://github.com/hlengw/IODS-project).
