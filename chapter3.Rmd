@@ -8,7 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+# MOOC Introduction to Open Data Science 2019: Homework3
 ## Step1. Check the data
 
 #### Read the joined student alcohol consumption data as alc dataset
@@ -27,7 +27,7 @@ The dataset alc includes 35 varibles with 382 rows. The alc_use is the average o
 Personally, I think alcohol consumption is related to a person's relationship with family members, higher alcohol concumption may caused by bad relationship, so I select #24 famrel as one onf the analysis target. In addition, in my opinion, if a student tends to have a promising future, he/she may focus on study more rather than be absent in class too often, so I select #14 studytime and #30 absences as the interesing variables. Last, I am interested in if the score is related to alcohol consumption, so I choose #32 G3 as the fourth variable.
 
 >
-- # 14 studytime - weekly study time (numeric: 1 - <2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - >10 hours) 
+- #14 studytime - weekly study time (numeric: 1 - <2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - >10 hours) 
 - #24 famrel - quality of family relationships (numeric: from 1 - very bad to 5 - excellent)
 - #30 absences - number of school absences (numeric: from 0 to 93) 
 - #32 G3 - final grade (numeric: from 0 to 20, output target)
@@ -39,8 +39,8 @@ alc_4 <- alc %>% select(16, 24, 30, 33, 34, 35)
 head(alc_4, n=10)
 ```
 
-#### Graphically explore: cross-tabulations, bar plots and box plots
-##### cross-tabulations
+#### Graphically explore: a) cross-tabulations b) scatter plots
+##### a) cross-tabulations
 high_use vs studytime
 ```{r}
 alc_4.v1 <- table(alc$high_use, alc$studytime)
@@ -61,7 +61,7 @@ high_use vs G3
 alc_4.v4 <- table(alc$high_use, alc$G3)
 round(prop.table(alc_4.v4,1), 2)
 ```
-##### scatter plots
+##### b) scatter plots
 
 ```{r, echo = FALSE}
 # access the GGally and ggplot2 libraries
