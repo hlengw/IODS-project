@@ -1,0 +1,21 @@
+---
+title: "chapter4"
+author: "Hsiang-Leng, Wang"
+date: "11/25/2019"
+output: html_document
+---
+# MOOC Introduction to Open Data Science 2019: Homework4
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r cars}
+summary(cars)
+```
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
