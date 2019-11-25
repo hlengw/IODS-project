@@ -10,12 +10,64 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Step1. Check the Boston dataset
+##### View the dataset
+```{r}
+library(dplyr)
+library(MASS)
+head(Boston, n=15)
+```
+##### View the dataset structure
+```{r}
+str(Boston)
+```
+>
+The Boston dataset includes 14 variables and 506 rows and it contains the following columns:
+>
+* crim: per capita crime rate by town.
+* zn: proportion of residential land zoned for lots over 25,000 sq.ft.
+* indus: proportion of non-retail business acres per town.
+* chas: Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
+* nox: nitrogen oxides concentration (parts per 10 million).
+* rm: average number of rooms per dwelling.
+* age: proportion of owner-occupied units built prior to 1940.
+* dis: weighted mean of distances to five Boston employment centres.
+* rad: index of accessibility to radial highways.
+* tax: full-value property-tax rate per \$10,000.
+* ptratio: pupil-teacher ratio by town.
+* black: 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town.
+* lstat: lower status of the population (percent).
+* medv: median value of owner-occupied homes in \$1000s.
 
-```{r cars}
-summary(cars)
+##### Graphical overview
+Check the correlations between variables via correlation matrix plot.
+```{r, echo = FALSE}
+#install.packages("corrplot")
+library(corrplot)
+corrplot(cor(Boston), type="upper")
 ```
 
+> 
+If the relationship between two variables are more related, the circle would be more bigger and darker. According to the size and color of the circles, we can observe that those variables are related as following: 
+>
+* crim: rad, tax
+* zn: dis, age, indus
+* indus: nox, dis, tax
+* chas: N/A
+* nox: age, dis, tax
+* rm: latat, medv
+* age: dis, lstat
+* dis: rad, tax, lstat
+* rad: tax
+* tax: lstat
+* ptratio: medv
+* black: crim, rad, tax...
+* lstat: rm, age...
+* medv: rm
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+Summary Boston dataset
+```{r, echo = FALSE}
+summary(Boston)
 ```
+
+Standardize the dataset and print out summaries of the scaled data. How did the variables change? Create a categorical variable of the crime rate in the Boston dataset (from the scaled crime rate). Use the quantiles as the break points in the categorical variable. Drop the old crime rate variable from the dataset. Divide the dataset to train and test sets, so that 80% of the data belongs to the train set. (0-2 points)
