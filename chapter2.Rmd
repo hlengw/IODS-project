@@ -1,4 +1,5 @@
-# Regression and model validation
+# MOOC Introduction to Open Data Science 2019: Homework2
+## Regression and model validation
 
 *Describe the work you have done this week and summarize your learning.*
 
@@ -7,7 +8,7 @@
 - Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
 
 
-### part1. Know the dataset
+### Part1. Know the dataset
 #### Read the students2014 data
 > students2014 <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt", sep=",", header=TRUE)
 
@@ -58,7 +59,12 @@ The student2014 dataset has 7 variables, including gender, age, attitute, deep, 
 #### Draw diagnostic plots using the plot() function. Choose the plots 1, 2 and 5
 >plot(my_model2, which = c(1,2,5), caption = list("Residuals vs Fitted", "Normal Q-Q","Residuals vs Leverage"))
 
+<center>
+
 ![my_model2 diagnostic plots](data/diagnostic_plots.png)
+
+</center>
+
 
 - *hint: The numbers in "which = c(number1,number2,number3...)" represent different diagnostic plots, such as 1 for Residuals vs Fitted, 2 for Normal Q-Q and 5 for Residuals vs Leverage.*
 
