@@ -6,10 +6,6 @@ output: html_document
 ---
 # MOOC Introduction to Open Data Science 2019: Homework4
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## Step1. Check the Boston dataset
 ##### View the dataset
 ```{r}

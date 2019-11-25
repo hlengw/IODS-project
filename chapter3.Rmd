@@ -4,10 +4,6 @@ author: "Hsiang-Leng, Wang"
 date: "2019/11/22"
 output: html_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 # MOOC Introduction to Open Data Science 2019: Homework3
 ## Step1. Check the data
 
