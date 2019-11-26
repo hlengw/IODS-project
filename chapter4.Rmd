@@ -18,7 +18,7 @@ head(Boston, n=15)
 str(Boston)
 ```
 >
-The Boston dataset includes 14 variables and 506 rows and it contains the following columns:
+The Boston dataset is aiming to see the housing values in suburbs of Boston which includes 14 variables and 506 rows and it contains the following columns:
 >
 * crim: per capita crime rate by town.
 * zn: proportion of residential land zoned for lots over 25,000 sq.ft.
@@ -65,5 +65,93 @@ Summary Boston dataset
 ```{r, echo = FALSE}
 summary(Boston)
 ```
+##### Standardize the dataset
+```{r, echo = FALSE}
+Boston_scale <- scale(Boston, center = TRUE, scale = TRUE)
+head(Boston_scale)
+summary(Boston_scale)
+```
+##### Create a categorical variable of the crime rate in the Boston dataset (from the scaled crime rate)
+p.s. Use the quantiles as the break points in the categorical variable
+```{r}
+# class of the boston_scaled object
+class(Boston_scale)
+Boston_scale <- as.data.frame(Boston_scale)
 
-Standardize the dataset and print out summaries of the scaled data. How did the variables change? Create a categorical variable of the crime rate in the Boston dataset (from the scaled crime rate). Use the quantiles as the break points in the categorical variable. Drop the old crime rate variable from the dataset. Divide the dataset to train and test sets, so that 80% of the data belongs to the train set. (0-2 points)
+# create a quantile vector of crim and print it
+bins <- quantile(Boston_scale$crim)
+bins
+
+# create a categorical variable 'crime'
+crime <- cut(Boston_scale$crim, breaks = bins, include.lowest = TRUE)
+table(crime)
+
+# remove original crim from the dataset
+Boston_scale <- dplyr::select(Boston_scale, -crim)
+
+# add the new categorical value to scaled data
+Boston_scale <- data.frame(Boston_scale, crime)
+```
+##### Divide the dataset to train and test sets, so that 80% of the data belongs to the train set
+```{r}
+# number of rows in the Boston dataset 
+n <- nrow(Boston_scale)
+
+# choose randomly 80% of the rows
+ind <- sample(n,  size = n * 0.8)
+
+# create train set
+train <- Boston_scale[ind,]
+
+# create test set 
+test <- Boston_scale[-ind,]
+
+# save the correct classes from test data
+correct_classes <- Boston_scale[-ind,]$crime
+
+# remove the crime variable from test data
+test <- dplyr::select(test, -crime)
+```
+
+##### Fit the linear discriminant analysis on the train set
+Use the categorical crime rate as the target variable and all the other variables in the dataset as predictor variables. Draw the LDA (bi)plot.
+```{r}
+# linear discriminant analysis
+lda.fit <- lda(crime~., data = train)
+
+# print the lda.fit object
+lda.fit
+
+# the function for lda biplot arrows
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "red", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col=color, length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col=color, pos=3)
+}
+
+# target classes as numeric
+classes <- as.numeric(train$crime)
+
+# plot the lda results
+plot(lda.fit, dimen = 2)
+lda.arrows(lda.fit, myscale = 1)
+```
+
+##### Save the crime categories from the test set and then remove the categorical crime variable from the test dataset
+Then predict the classes with the LDA model on the test data. Cross tabulate the results with the crime categories from the test set. Comment on the results.
+
+##### Reload the Boston dataset and standardize the dataset 
+(we did not do this in the Datacamp exercises, but you should scale the variables to get comparable distances). Calculate the distances between the observations. Run k-means algorithm on the dataset. Investigate what is the optimal number of clusters and run the algorithm again. Visualize the clusters (for example with the pairs() or ggpairs() functions, where the clusters are separated with colors) and interpret the results. (0-4 points)
+
+##### Bonus
+Perform k-means on the original Boston data with some reasonable number of clusters (> 2). 
+Remember to standardize the dataset. Then perform LDA using the clusters as target classes. Include all the variables in the Boston data in the LDA model. 
+
+##### Visualize the results with a biplot (include arrows representing the relationships of the original variables to the LDA solution). 
+Interpret the results. Which variables are the most influencial linear separators for the clusters? (0-2 points to compensate any loss of points from the above exercises)
+
+##### Super-Bonus
+Run the code below for the (scaled) train data that you used to fit the LDA. The code creates a matrix product, which is a projection of the data points.
