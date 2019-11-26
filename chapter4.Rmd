@@ -114,7 +114,8 @@ test <- dplyr::select(test, -crime)
 ```
 
 ##### Fit the linear discriminant analysis on the train set
-Use the categorical crime rate as the target variable and all the other variables in the dataset as predictor variables. Draw the LDA (bi)plot.
+- Use the categorical crime rate as the target variable and all the other variables in the dataset as predictor variables. Draw the LDA (bi)plot.
+- Save the crime categories from the test set and then remove the categorical crime variable from the test dataset
 ```{r}
 # linear discriminant analysis
 lda.fit <- lda(crime~., data = train)
@@ -140,18 +141,84 @@ plot(lda.fit, dimen = 2)
 lda.arrows(lda.fit, myscale = 1)
 ```
 
-##### Save the crime categories from the test set and then remove the categorical crime variable from the test dataset
-Then predict the classes with the LDA model on the test data. Cross tabulate the results with the crime categories from the test set. Comment on the results.
+##### Predict the classes with the LDA model on the test data. Cross tabulate the results with the crime categories from the test set. Comment on the results.
+```{r}
+# predict classes with test data
+lda.pred <- predict(lda.fit, newdata = test)
+
+# cross tabulate the results
+table(correct = correct_classes, predicted = lda.pred$class)
+```
 
 ##### Reload the Boston dataset and standardize the dataset 
-(we did not do this in the Datacamp exercises, but you should scale the variables to get comparable distances). Calculate the distances between the observations. Run k-means algorithm on the dataset. Investigate what is the optimal number of clusters and run the algorithm again. Visualize the clusters (for example with the pairs() or ggpairs() functions, where the clusters are separated with colors) and interpret the results. (0-4 points)
+- Calculate the distances between the observations. Run k-means algorithm on the dataset. Investigate what is the optimal number of clusters and run the algorithm again. 
+- Visualize the clusters. For example with the pairs() or ggpairs() functions, where the clusters are separated with colors and interpret the results
+```{r}
+library(MASS)
+data('Boston')
+
+# scale the dataset
+bs <- scale(Boston)
+bs <- as.data.frame(bs)
+
+# distance measure 1: euclidean distance matrix
+dist_eu <- dist(bs, method = "euclidean")
+
+# look at the summary of the distances
+summary(dist_eu)
+
+# distance measure 2: manhattan distance matrix
+dist_man <- dist(bs, method = "manhattan")
+
+# look at the summary of the distances
+summary(dist_man)
+
+# k-means clustering
+# plot the Boston dataset with clusters
+km <-kmeans(bs, centers = 4)
+pairs(bs[6:10], col = km$cluster)
+
+# k-means clustering
+km <-kmeans(bs, centers = 3)
+pairs(bs[6:10], col = km$cluster)
+
+# k-means clustering
+km <-kmeans(bs, centers = 2)
+pairs(bs[6:10], col = km$cluster)
+
+# k-means clustering
+km <-kmeans(bs, centers = 1)
+pairs(bs[6:10], col = km$cluster)
+
+```
+As shown in the k-means graph above (from center=4 to 1), the pair graph with center=2 seems the most resonable seperation. In the graph when center=3, some cluster are ambiguous winthin one group. 
 
 ##### Bonus
-Perform k-means on the original Boston data with some reasonable number of clusters (> 2). 
-Remember to standardize the dataset. Then perform LDA using the clusters as target classes. Include all the variables in the Boston data in the LDA model. 
+- Perform k-means on the original Boston data with some reasonable number of clusters (> 2). 
+- Perform LDA using the clusters as target classes. Include all the variables in the Boston data in the LDA model. 
+```{r}
+Boston_scale_original <- scale(Boston)
+Boston_scale_original <- as.data.frame(Boston_scale_original)
+
+# k-means clustering
+km_original <-kmeans(Boston_scale_original, centers = 4)
+pairs(Boston_scale_original[6:10], col = km_original$cluster)
+# k-means clustering
+km_original <-kmeans(Boston_scale_original, centers = 3)
+pairs(Boston_scale_original[6:10], col = km_original$cluster)
+
+
+
+```
 
 ##### Visualize the results with a biplot (include arrows representing the relationships of the original variables to the LDA solution). 
 Interpret the results. Which variables are the most influencial linear separators for the clusters? (0-2 points to compensate any loss of points from the above exercises)
+```{r}
+
+```
 
 ##### Super-Bonus
 Run the code below for the (scaled) train data that you used to fit the LDA. The code creates a matrix product, which is a projection of the data points.
+```{r}
+
+```
