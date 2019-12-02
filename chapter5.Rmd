@@ -5,26 +5,85 @@ date: "11/27/2019"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+# MOOC Introduction to Open Data Science 2019: Homework5
+## 1. Graphical Overview and Summaries 
+(0-3 points)
+Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them.
+```{r}
+human_ <- read.csv(file = "data/human.csv", sep = ",", header = TRUE)
+
+# Access GGally
+library(GGally)
+
+# visualize the 'human_' variables
+ggpairs(human_,
+        title="human data", # title of the plot
+        colour = "sex") # aesthetics, ggplot2 style
+
+# compute the correlation matrix and visualize it with corrplot
+cor(human_)
+```
+> This Human dataset contains the information about Human Development Index (HDI) which includes Edu2.FM (Female education index), Labo.FM (Female labour market index), Life.Exp (Life expectancy index), Edu.Exp (Education epectancy index), GNI (Gross national income), Mat.Mor (Maternal mortality ratio), Ado.Birth (Adolescent birth rate) and Parli.F (Female shares of parliamentary seats) as the dataset variables.
+
+> HDI has three dimentions, including Long and healthy life, Knowledge and A decent standard of living which are able to be evaluated by life expentanct index, education index and GNI index.
+
+> According to the human data distribution plot, we can see the correlation between Life.Exp, Edu.Exp and GNI are highly related (> 0.6)
+
+## 2. Principal Component Analysis (PCA)
+(0-2 points)
+- Perform PCA on the not standardized human data. Show the variability captured by the principal components. 
+- Draw a biplot displaying the observations by the first two principal components (PC1 coordinate in x-axis, PC2 coordinate in y-axis), along with arrows representing the original variables. 
+```{r}
+# perform principal component analysis on the not standardized human data
+pca_human <- prcomp(human_)
+pca_human
 ```
 
-## R Markdown
+```{r}
+# draw a biplot of the principal component representation and the original variables
+biplot(pca_human, choices = 1:2)
+```
+> According to the biplot, the GNI tends to PC2 dimension and others variables tend to PC1 dimension.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## 3. Comparison between standardized and non-standardized dataset
+(0-4 points)
+- Standardize the variables in the human data and repeat the above analysis. Interpret the results of both analysis (with and without standardizing). 
+- Are the results different? Why or why not? Include captions (brief descriptions) in your plots where you describe the results by using not just your variable names, but the actual phenomenons they relate to. 
+```{r}
+# standardize the variables
+human_std <- scale(human_)
+# print out summaries of the standardized variables
+summary(human_std)
+# perform principal component analysis (with the SVD method)
+pca_human_std <- prcomp(human_std)
+# draw a biplot of the principal component representation and the original variables
+biplot(pca_human_std, choices = 1:2)
+```
+> According to the biplot with standardized data, the Edu2.FM (Female education index), Life.Exp (Life expectancy index), Edu.Exp (Education epectancy index) and GNI (Gross national income) are related and tend to PC2 dimension. Comparing to the non-standardized data, the biplot with standardized data is more clearer to interpret the correlation between the several variables.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## 4. Personal interpretations of the first two principal component dimensions
+(0-2 points)
+Give your personal interpretations of the first two principal component dimensions based on the biplot drawn after PCA on the standardized human data. 
+```{r}
+# create and print out a summary of pca_human
+s <- summary(pca_human)
 
-```{r cars}
-summary(cars)
+
+# rounded percetanges of variance captured by each PC
+pca_pr <- round(1*s$importance[2, ], digits = 5)
+
+# print out the percentages of variance
+
+
+# create object pc_lab to be used as axis labels
+paste0(names(pca_pr), " (", pca_pr, "%)")
+
+# draw a biplot
+biplot(pca_human, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = NA, ylab = NA)
+
 ```
 
-## Including Plots
+## 5. Multiple Correspondence Analysis
+(0-4 points)
+Load the tea dataset from the package Factominer. Explore the data briefly: look at the structure and the dimensions of the data and visualize it. Then do Multiple Correspondence Analysis on the tea data (or to a certain columns of the data, it’s up to you). Interpret the results of the MCA and draw at least the variable biplot of the analysis. You can also explore other plotting options for MCA. Comment on the output of the plots.
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
