@@ -43,6 +43,7 @@ pca_human
 # draw a biplot of the principal component representation and the original variables
 biplot(pca_human, choices = 1:2)
 ```
+
 > According to the biplot, the GNI tends to PC2 dimension and others variables tend to PC1 dimension.
 
 ## 3. Comparison between standardized and non-standardized dataset
@@ -59,31 +60,62 @@ pca_human_std <- prcomp(human_std)
 # draw a biplot of the principal component representation and the original variables
 biplot(pca_human_std, choices = 1:2)
 ```
+
 > According to the biplot with standardized data, the Edu2.FM (Female education index), Life.Exp (Life expectancy index), Edu.Exp (Education epectancy index) and GNI (Gross national income) are related and tend to PC2 dimension. Comparing to the non-standardized data, the biplot with standardized data is more clearer to interpret the correlation between the several variables.
 
 ## 4. Personal interpretations of the first two principal component dimensions
 (0-2 points)
 Give your personal interpretations of the first two principal component dimensions based on the biplot drawn after PCA on the standardized human data. 
-```{r}
-# create and print out a summary of pca_human
-s <- summary(pca_human)
 
-
-# rounded percetanges of variance captured by each PC
-pca_pr <- round(1*s$importance[2, ], digits = 5)
-
-# print out the percentages of variance
-
-
-# create object pc_lab to be used as axis labels
-paste0(names(pca_pr), " (", pca_pr, "%)")
-
-# draw a biplot
-biplot(pca_human, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = NA, ylab = NA)
-
-```
+> After the dimension reduction by PCA, we can see the better cluster in biplot. In the first plot, we can only see the dimension tendency of index GNI is different from others. However, in the second plot, we see the indeies are devided into three parts.
 
 ## 5. Multiple Correspondence Analysis
 (0-4 points)
-Load the tea dataset from the package Factominer. Explore the data briefly: look at the structure and the dimensions of the data and visualize it. Then do Multiple Correspondence Analysis on the tea data (or to a certain columns of the data, it’s up to you). Interpret the results of the MCA and draw at least the variable biplot of the analysis. You can also explore other plotting options for MCA. Comment on the output of the plots.
+- Load the tea dataset from the package Factominer. Explore the data briefly: look at the structure and the dimensions of the data and visualize it. 
+- Do Multiple Correspondence Analysis on the tea data (or to a certain columns of the data, it’s up to you). 
+- Interpret the results of the MCA and draw at least the variable biplot of the analysis. You can also explore other plotting options for MCA. Comment on the output of the plots.
 
+```{r}
+# load packages
+require(FactoMineR)
+require(ggplot2)
+require(dplyr)
+require(tidyr)
+library("FactoMineR")
+# load data tea
+data(tea)
+
+# column names to keep in the dataset
+#keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+
+# select the 'keep_columns' to create a new dataset
+tea_time <- tea[, c(13, 14, 16, 15, 4, 17)]
+
+# look at the summaries and structure of the data
+summary(tea_time)
+str(tea_time)
+#visualize the tea data
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+
+```
+
+```{r}
+# multiple correspondence analysis
+mca <- MCA(tea_time, graph = FALSE)
+
+# summary of the model
+summary(mca)
+
+# visualize MCA, try 4 different arguments
+plot(mca)
+plot(mca, invisible=c("ind"))
+plot(mca, habillage = "quali")
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+
+```{r}
+# variable biplot
+plot(mca, axes = c(1,2), choix=c("var"))
+```
+
+> According to the biplot above, we can see "How", "Tea", "lunch" and "suger" are highly related, and "where" and "how" are highly related.
