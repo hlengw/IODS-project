@@ -16,12 +16,12 @@ colnames(rats)
 # [12] "WD57"  "WD64" 
 
 # view the data contents and structures
-
-# bprs dataset has 11 variables and 40 rows with all integers data which between  18 to 95 (except columns 1 to 2).
+# bprs dataset has 11 variables and 40 rows with all integers data between 18 to 95 (except columns 1 to 2).
 head(bprs)
 str(bprs)
 min(bprs[, c(3:11)])
 max(bprs[, c(3:11)])
+
 #   treatment subject week0 week1 week2 week3 week4 week5 week6 week7 week8
 # 1         1       1    42    36    36    43    41    40    38    47    51
 # 2         1       2    58    68    61    55    43    34    28    28    28
@@ -43,7 +43,7 @@ max(bprs[, c(3:11)])
 # $ week7    : int  47 28 25 42 38 27 31 25 23 39 ...
 # $ week8    : int  51 28 24 46 32 25 31 24 21 32 ...
 
-# rats dataset has 13 variables and 16 rows with all integers data which between 230 to 612 (except columns 1 to 3).
+# rats dataset has 13 variables and 16 rows with all integers data between 230 to 612 (except columns 1 to 3).
 head(rats)
 str(rats)
 min(rats[, c(4:11)])
