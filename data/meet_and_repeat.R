@@ -114,7 +114,6 @@ summary(rats)
 # Max.   :628.0
 
 # 2. (1 point) Convert the categorical variables of both data sets to factors.
-
 library(dplyr) # Access the packages dplyr and tidyr
 library(tidyr)
 bprs$treatment <- factor(bprs$treatment) # Factor treatment & subject
