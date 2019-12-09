@@ -1,9 +1,8 @@
-# 1. Load the data sets (BPRS and RATS) into R using as the source the GitHub repository of MABS
+# Load the data sets (BPRS and RATS) into R using as the source the GitHub repository of MABS
 bprs <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt", header = T)
 rats <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt", header = T)
-# wide-form
 
-# (1 point) take a look at the data sets: 
+# 1. (1 point) take a look at the data sets (wide-form): 
 # check their variable names
 colnames(bprs)
 colnames(rats)
