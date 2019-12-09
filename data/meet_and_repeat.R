@@ -8,11 +8,11 @@ rats <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/maste
 colnames(bprs)
 colnames(rats)
 
-# bprs dataset has 11 variables which names are as following:
+# bprs dataset has 11 variables which names are shown as following:
 # [1] "treatment" "subject"   "week0"     "week1"     "week2"     "week3"     "week4"    
 # [8] "week5"     "week6"     "week7"     "week8"
 
-# rats dataset has 13 variables which names are as following:
+# rats dataset has 13 variables which names are shown as following:
 # [1] "ID"    "Group" "WD1"   "WD8"   "WD15"  "WD22"  "WD29"  "WD36"  "WD43"  "WD44"  "WD50" 
 # [12] "WD57"  "WD64" 
 
