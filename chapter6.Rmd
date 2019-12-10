@@ -15,14 +15,13 @@ output: html_document
     - (0-4 points) Graphs or analysis results
     - (0-4 points) Interpretations
 
-## Data Preparing
-
 ### Dataset Introduction:
 1. RATS dataset is from a nutrition study conducted in three groups of rats (Crowder and Hand, 1990). The three groups were put on different diets, and each animal’s body weight (grams) was recorded repeatedly (approximately weekly, except in week7 when two recordings were taken) over a 9-week period. **The question of most interest is whether the growth profiles of the three groups differ**.
 
 2. BPRS (Brief Psychiatric Rating Scale) dataset is measured before treatment began (week 0) and then at weekly intervals for eight weeks. The BPRS assesses the level of 18 symptom constructs such as hostility, suspiciousness, hallucinations and grandiosity; each of these is rated from one (not present) to seven (extremely severe). **The scale is used to evaluate patients suspected of having schizophrenia**.
 
-### Load data 1: RATS dataset
+## Data Preparing: "RATS" dataset
+## 1. Load dataset1
 #### (0-4 points) Graphs or analysis results
 ```{r}
 RATS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt", header = T)
@@ -33,6 +32,7 @@ str(RATS)
 # RATS dataset summary
 summary(RATS)
 ```
+
 Since the attribite of ID and Group are categorical variables, we can change the type of the dataset from integer to factor by factor() function!
 ```{r}
 library(dplyr) # Access the packages dplyr and tidyr
@@ -41,20 +41,93 @@ RATS$ID <- factor(RATS$ID) # Factor treatment & subject
 RATS$Group <- factor(RATS$Group)
 ```
 
-In order to visulaize the data, we would like to convert the original wide-form
+In order to visulaize the data, we would like to convert the original wide-form to long-form first.
+```{r}
+RATSL <- RATS %>% gather(key = WD, value = rats_weight, -ID, -Group) # Convert to long-form
+RATSL <-  RATSL %>% mutate(Time = as.integer(substr(WD, 3, 4))) # Extract the week number, from the 3th letter to the 4 th letter
+glimpse(RATSL)
+```
+
+Let's implement ggplot to visualize the RATSL dataset by line chart. 
+
+- First, we group the data by "Time" and set the color by "Group", so we can see that each line represents every time when the weight is measured and different color means respective group.
+- Second, we group the data by "ID" and set the color by "Group", so we can see that each line represents each rat's weight change with different color as respective group.
+
+## 2. Visualize dataset
+```{r}
+library(ggplot2)
+ggplot(RATSL, aes(x = ID, y = rats_weight, color = Group, group = Time)) +
+  geom_point() +
+  geom_line() +
+  scale_color_brewer(palette = 'Dark2') +
+  theme_classic(base_size = 12)
+
+ggplot(RATSL, aes(x = Time, y = rats_weight, color = Group, group = ID)) +
+  geom_point() +
+  geom_line() +
+  scale_color_brewer(palette = 'Dark2') +
+  theme_classic(base_size = 12)
+```
+
+In the above plots, we can see the growth pattern from the first measurement to the last measurement is quite similar. However, we need to do further analysis to see whether the growth profiles of the three groups differ.
+
+So we would like to check the growth pattern for each group by ANOVA analysis. In the begining, we plot a boxplot to see the rough data distribution in the dataset for each group.
+```{r}
+# Box plots
+# ++++++++++++++++++++
+# Plot weight by group and color by group
+library(ggpubr)
+ggboxplot(RATSL, x = "Group", y = "rats_weight", 
+          color = "Group", palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+          order = c("1", "2", "3"),
+          ylab = "rats_weight", xlab = "Group")
+```
+
+And then, we would like to seperate each group's data from the original RATSL dataset.
 ```{r}
 library(tidyverse)
+RATSL_1 <- RATSL %>% filter(Group==1)
+RATSL_2 <- RATSL %>% filter(Group==2)
+RATSL_3 <- RATSL %>% filter(Group==3)
+```
 
-RATS_g1 <- RATS[which(RATS$Group == 1), ]
-RATS_g2 <- RATS[which(RATS$Group == 2), ]
-RATS_g3 <- RATS[which(RATS$Group == 3), ]
-ggplot(RATS) +
-    geom_line(aes(x = ID, y = WD1, color = Group))+
-    geom_line(aes(x = ID, y = WD64, color = Group))
+Now, we can standardized the rats_weight in RATSL dataset and conduct ANOVA anaysis to see the relationship between rat's weight and the time. We assume that H0 is when rats’ weight is not related to the time and H1 is when rats’ weight is related to the time.
 
+## 3. Analyze dataset
+```{r}
+library(standardize)
+# Standardize rats_weight of RATSL_1 dataset
+RATSL_1$rats_weight <- scale(RATSL_1$rats_weight)
+# Standardize rats_weight of RATSL_2 dataset
+RATSL_2$rats_weight <- scale(RATSL_2$rats_weight)
+# Standardize rats_weight of RATSL_3 dataset
+RATSL_3$rats_weight <- scale(RATSL_3$rats_weight)
+
+# Compute the analysis of variance
+RATSL_1_aov <- aov(rats_weight ~ Time, data = RATSL_1)
+RATSL_2_aov <- aov(rats_weight ~ Time, data = RATSL_2)
+RATSL_3_aov <- aov(rats_weight ~ Time, data = RATSL_3)
+
+# Summary of the analysis
+summary(RATSL_1_aov)
+summary(RATSL_2_aov)
+summary(RATSL_3_aov)
+
+par(mfrow=c(2,2))
+plot(RATSL_1_aov)
+plot(RATSL_2_aov)
+plot(RATSL_3_aov)
 ```
 
 #### (0-3 points) Interpretations
+According to the ANOVA analysis report, ...... 
+
+- First, the P-value of group 1 weight data is 3.01e^07<0.01, so it is significant, which means the rats' weight is related to the time. 
+- Second, the P-value of group 2 weight data is 0.0556>0.01, so it is not significant, which means the rats' weight is relatively not related to the time. 
+- Third, the P-value of group 1 weight data is 0.000216<0.01, so it is significant, which means the rats' weight is related to the time.
+
+In addtion, in ANOVA analysis Normal Q-Q plot of group 2, the dots are not well distributed on the line, which suggests that it is a bimodal distribution for the original data distribution.
 
 
-
+## Data Preparing: "BPRS" dataset
+## 1. Load dataset2
